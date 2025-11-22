@@ -77,7 +77,7 @@ nav a:hover {
 /* Miniature Short */
 .featured-box {
     width: 260px;
-    transform: translateX(40px); /* décale vers la droite de 40px */
+    transform: translateX(135px); /* décale vers la droite de 40px */
 }
 
 
@@ -266,4 +266,3 @@ footer {
     border-radius: 8px;
     box-shadow: 0 0 10px #00ff88;
 }
-
