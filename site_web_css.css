@@ -4,16 +4,17 @@
 body {
     margin: 0;
     font-family: "Segoe UI", Arial, sans-serif;
-    background: #0f0f0f;
-    color: #f1f1f1;
+    background-color: #0f0f0f; /* fond noir */
+    color: #f1f1f1; /* texte blanc */
     font-size: clamp(14px, 1.5vw, 18px);
+    line-height: 1.6;
 }
 
 /* ===========================
    ----- HEADER -----
    =========================== */
 header {
-    background: #1c1c1c;
+    background-color: #1c1c1c;
     padding: clamp(15px, 2vw, 30px);
     text-align: center;
     border-bottom: 3px solid #00e676;
@@ -32,11 +33,12 @@ nav ul {
     list-style: none;
     padding: 0;
     margin-top: clamp(10px, 1.5vw, 20px);
+    display: flex;
+    gap: clamp(10px, 2vw, 20px);
 }
 
 nav ul li {
     display: inline-block;
-    margin: 0 clamp(10px, 2vw, 20px);
 }
 
 nav a {
@@ -54,7 +56,7 @@ nav a:hover {
    ----- SECTIONS -----
    =========================== */
 .section {
-    padding: clamp(30px, 5vw, 50px) 15%;
+    padding: clamp(30px, 5vw, 50px) 10%;
 }
 
 .section h2 {
@@ -63,101 +65,31 @@ nav a:hover {
     font-size: clamp(18px, 3.5vw, 32px);
 }
 
-/* ===========================
-   ----- LAYOUT MINIATURE + PRESENTATION -----
-   =========================== */
-.top-layout {
-    display: flex;
-    align-items: flex-start;
-    gap: clamp(10px, 3vw, 20px);
-    margin: clamp(20px, 4vw, 30px) 8%;
-}
-
-.presentation-inline {
-    flex: 1;
-}
-
-.featured-box {
-    width: 260px;
+.section h3, 
+.section p, 
+.section li, 
+.section code {
+    color: #f1f1f1;
 }
 
 /* ===========================
-   ----- LECTEUR SHORT (9:16) -----
+   ----- IMAGES RESPONSIVES -----
    =========================== */
-.custom-player {
-    position: relative;
+.responsive-img {
+    display: block;
     width: 100%;
-    aspect-ratio: 9 / 16;
-    max-width: 260px;
-    border-radius: 10px;
-    overflow: hidden;
-    cursor: pointer;
-    border: 2px solid #00e676;
-    background: #000;
-    box-shadow: 0 0 10px #00e676;
-    transition: 0.3s;
-}
-
-.custom-player:hover {
-    box-shadow: 0 0 20px #00ff99;
-    transform: scale(1.02);
-}
-
-.player-thumb {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-}
-
-.play-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.35);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.play-btn {
-    width: clamp(40px, 8vw, 55px);
-    height: clamp(40px, 8vw, 55px);
-    border-radius: 50%;
-    background: rgba(255,0,0,0.85);
-    position: relative;
-    box-shadow: 0 0 12px red;
-    transition: 0.3s;
-}
-
-.play-btn::before {
-    content: '';
-    position: absolute;
-    left: 40%;
-    top: 30%;
-    width: 0;
-    height: 0;
-    border-left: 18px solid white;
-    border-top: 12px solid transparent;
-    border-bottom: 12px solid transparent;
-}
-
-.custom-player:hover .play-btn {
-    background: rgba(255,50,50,1);
-    box-shadow: 0 0 16px #ff4f4f;
-    transform: scale(1.15);
+    height: auto;
+    max-width: 1320px; /* largeur max pour les grandes images */
+    margin: clamp(10px, 2vw, 20px) 0;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #00ff88;
 }
 
 /* ===========================
-   ----- PROJETS CLIQUABLES -----
+   ----- PROJECT CARDS -----
    =========================== */
-.cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: clamp(15px, 3vw, 25px);
-}
-
 .project-card {
-    background: #161616;
+    background-color: #161616;
     border: 1px solid #00e676;
     border-radius: 10px;
     width: 300px;
@@ -192,23 +124,12 @@ nav a:hover {
     border-color: #00ff88;
 }
 
-.project-card.disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    border-color: #555;
-}
-
-.project-card.disabled:hover {
-    transform: none;
-    box-shadow: none;
-}
-
 /* ===========================
-   ----- BOUTON YOUTUBE -----
+   ----- BOUTONS -----
    =========================== */
 .yt-button {
     display: inline-block;
-    background: #ff0000;
+    background-color: #ff0000;
     color: #fff;
     border-radius: 6px;
     text-decoration: none;
@@ -219,102 +140,23 @@ nav a:hover {
 }
 
 .yt-button:hover {
-    background: #cc0000;
+    background-color: #cc0000;
 }
 
 /* ===========================
    ----- FOOTER -----
    =========================== */
 footer {
-    background: #1c1c1c;
+    background-color: #1c1c1c;
     text-align: center;
     padding: clamp(10px, 2vw, 15px);
     margin-top: clamp(30px, 5vw, 50px);
     border-top: 3px solid #00e676;
+    color: #f1f1f1;
 }
 
 /* ===========================
-   ----- PRESENTATION IMAGE -----
-   =========================== */
-.presentation-image {
-    margin-top: clamp(15px, 3vw, 20px);
-    background: rgba(0, 230, 118, 0.1);
-    padding: clamp(8px, 2vw, 10px);
-    border-radius: 10px;
-    display: inline-block;
-}
-
-.presentation-image img,
-.responsive-img {
-    display: block;
-    width: 100%;
-    max-width: 200px;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #00ff88;
-}
-
-/* ===========================
-   ----- MENU DÉROULANT -----
-   =========================== */
-nav ul.main-menu {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    padding: 0;
-    margin: clamp(10px, 2vw, 20px);
-    background-color: #333;
-    border-radius: 5px;
-}
-
-nav ul.main-menu li {
-    position: relative;
-}
-
-nav ul.main-menu li a {
-    display: block;
-    padding: clamp(10px, 2vw, 15px) clamp(15px, 3vw, 20px);
-    color: white;
-    text-decoration: none;
-}
-
-nav ul.main-menu li a:hover {
-    background-color: #555;
-}
-
-.submenu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #444;
-    padding: clamp(8px, 2vw, 10px);
-    list-style: none;
-    gap: clamp(5px, 2vw, 10px);
-    z-index: 1000;
-}
-
-.submenu li {
-    display: inline-block;
-}
-
-.submenu li a {
-    padding: clamp(6px, 2vw, 10px) clamp(10px, 2vw, 15px);
-    color: white;
-    text-decoration: none;
-}
-
-.submenu li a:hover {
-    background-color: #666;
-}
-
-.has-submenu:hover .submenu {
-    display: flex;
-}
-
-/* ===========================
-   ----- RESPONSIVE MOBILE -----
+   ----- RESPONSIVE -----
    =========================== */
 @media (max-width: 800px) {
     .top-layout {
@@ -323,26 +165,6 @@ nav ul.main-menu li a:hover {
         margin: 20px 0;
         gap: 20px;
         text-align: center;
-    }
-
-    .featured-box {
-        transform: none;
-        width: 100%;
-        max-width: 300px;
-        margin: 0 auto;
-    }
-
-    .custom-player {
-        max-width: 100%;
-    }
-
-    .presentation-inline {
-        width: 100%;
-        text-align: center;
-    }
-
-    .cards {
-        justify-content: center;
     }
 
     .project-card {
