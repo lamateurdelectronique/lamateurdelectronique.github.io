@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>L'amateur d'électronique</title>
     <link rel="stylesheet" href="site_web_css.css">
+    <style>
+        /* Images responsives pour toute la page */
+        img {
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+            display: block;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body>
 
@@ -26,7 +37,7 @@
         Un robot suiveur de ligne, c’est un petit robot capable de repérer une ligne tracée au sol et de la suivre en toute autonomie. Grâce à ses capteurs, il détecte le contraste entre la ligne et le sol, puis ajuste sa trajectoire en temps réel.
         C’est un robot simple, mais parfait pour comprendre comment une machine peut “voir”, réagir et se déplacer de manière autonome. Simple en apparence, il y a pourtant plusieurs notions à connaître avant de réaliser ce projet.
     </h3>
-    <img class="responsive-img" src="robot_suiveur_video.jpg" alt="Robot suiveur de ligne">
+    <img src="robot_suiveur_video.jpg" alt="Robot suiveur de ligne">
 
     <h2>Les composants utilisés :</h2>
     <h3>
@@ -34,7 +45,7 @@
         Pour cela, il vous faut tourner le potentiomètre situé au-dessus du module. Faites des tests en utilisant une feuille foncée ou claire pour affiner la calibration. 
         Cela lui permet de “voir” la ligne noire tracée au sol et d’aider le robot à garder sa trajectoire.
     </h3>
-    <img class="responsive-img" src="composants.jpg" alt="Composants du robot">
+    <img src="composants.jpg" alt="Composants du robot">
 
     <h2>Le module KY-033</h2>
     <h3>
@@ -46,14 +57,14 @@
     <h3>➡️ "Je suis sur la ligne"</h3>
     <h3>➡️ "Je ne suis plus dessus"</h3>
     <h3>C’est ensuite grâce au programme que nous pourrons interpréter les données des capteurs et ainsi corriger la trajectoire du robot.</h3>
-    <img class="responsive-img" src="module_suiveur.jpg" alt="Module KY-033">
+    <img src="module_suiveur.jpg" alt="Module KY-033">
 
     <h2>La carte Arduino Uno</h2>
     <h3>
         L’Arduino Uno repose sur un microcontrôleur ATmega328P, chargé d’exécuter les instructions que vous lui programmez depuis l’IDE Arduino. Concrètement, c’est une petite carte capable de lire des signaux provenant de capteurs et piloter des actionneurs comme des moteurs, des LEDs ou des servomoteurs.
         Elle offre ainsi une interface simple pour transformer un programme informatique en actions physiques.
     </h3>
-    <img class="responsive-img" src="carte_arduino.jpg" alt="Carte Arduino Uno">
+    <img src="carte_arduino.jpg" alt="Carte Arduino Uno">
     <h3>
         L’Uno met à disposition un ensemble de broches et de fonctionnalités très utiles pour le prototypage :
         <ul>
@@ -71,19 +82,19 @@
     <h3>
         Le L298N est un pont en H, il permet de contrôler des moteurs à courant continu (DC) et des moteurs pas à pas. Il permet de piloter la vitesse et le sens de rotation des moteurs à partir d’un microcontrôleur, par exemple l'Arduino Uno.
     </h3>
-    <img class="responsive-img" src="motor_driver.jpg" alt="Pont en H L298N">
+    <img src="motor_driver.jpg" alt="Pont en H L298N">
     <h3>
         Le module utilise un composant L298N intégré, capable de gérer deux moteurs indépendants. Chaque moteur est contrôlé par deux entrées qui déterminent le sens de rotation. On peut contrôler la vitesse avec un signal PWM (modulation de largeur d’impulsion).
     </h3>
 
     <h2>Câblage du circuit :</h2>
-    <img class="responsive-img" src="circuit_robot_suiveur.jpg" alt="Câblage robot">
+    <img src="circuit_robot_suiveur.jpg" alt="Câblage robot">
     <h3>Source: www.raspberryme.com</h3>
 
     <h2>Vidéo du robot</h2>
     <div class="project-card">
-        <a class="project-card" href="https://www.youtube.com/watch?v=fV8ln9I88u4" target="_blank">
-            <img class="responsive-img" src="https://i.ytimg.com/vi/fV8ln9I88u4/hqdefault.jpg" alt="Robot suiveur de ligne">
+        <a href="https://www.youtube.com/watch?v=fV8ln9I88u4" target="_blank">
+            <img src="https://i.ytimg.com/vi/fV8ln9I88u4/hqdefault.jpg" alt="Robot suiveur de ligne">
             <h3>Robot Suiveur de Ligne</h3>
             <p>Voir la vidéo ➜</p>
         </a>
@@ -92,27 +103,8 @@
 </section>
 
 <footer>
-    <p>© <?php echo date("Y"); ?> - L'amateur d'électronique</p>
+    <p>© 2025 - L'amateur d'électronique</p>
 </footer>
 
 </body>
-
-<script>
-const scrollAmount = 120;
-
-document.querySelectorAll('.scroll-left').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const submenu = btn.nextElementSibling;
-        submenu.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    });
-});
-
-document.querySelectorAll('.scroll-right').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const submenu = btn.previousElementSibling;
-        submenu.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    });
-});
-</script>
-
 </html>
