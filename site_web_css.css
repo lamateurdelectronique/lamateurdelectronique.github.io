@@ -262,6 +262,11 @@ footer {
     box-shadow: 0 0 10px #00ff88;
 }
 
+.responsive-img {
+    width: 100%;
+    height: auto;
+}
+
 /* ===========================
    ----- MENU DÉROULANT -----
    =========================== */
@@ -359,3 +364,4 @@ nav ul.main-menu li a:hover {
         max-width: 320px;
     }
 }
+
