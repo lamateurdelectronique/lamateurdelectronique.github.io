@@ -42,22 +42,197 @@
     <nav>
         <ul>
             <li><a href="page_accueil.html">Accueil</a></li>
-            <li><a href="">Calculateur</a></li>
-            <li><a href="#">Simulateurs</a></li>
-            <li><a href="#">Mini-jeu</a></li>
+            <li><a href="#Calculateur-Loi-dOhm">Calculateur</a></li>
+            <li><a href="#led-simulator">Simulateurs</a></li>
+            <li><a href="#resistance-game">Mini-jeu</a></li>
         </ul>
     </nav>
 </header>
 
 <section id="ohm">
-    <h2>Calculateur Loi d’Ohm</h2>
+    <h2 id="Calculateur-Loi-dOhm">Calculateur Loi d'Ohm</h2>
     <p>Calculez la tension, le courant ou la résistance en entrant deux valeurs :</p>
+
     <label>Tension (V) : <input type="number" id="voltage" step="0.1"></label><br>
     <label>Courant (A) : <input type="number" id="current" step="0.01"></label><br>
-    <label>Résistance (Ω) : <input type="number" id="resistance" step="0.1"></label><br>
+    <label>Résistance (Ω) : <input type ="number" id="resistance" step="0.1" ></label><br>
+
     <button onclick="calculateOhm()">Calculer</button>
     <p id="ohmResult"></p>
 </section>
+
+<script>
+const voltage = document.getElementById("voltage");
+const current = document.getElementById("current");
+const resistance = document.getElementById("resistance");
+
+function checkInputs() {
+    const fields = [voltage, current, resistance];
+    const filled = fields.filter(f => f.value !== "").length;
+
+    if (filled === 2) {
+        fields.forEach(f => {
+            if (f.value === "") f.disabled = true;
+        });
+    } else {
+        fields.forEach(f => f.disabled = false);
+    }
+}
+
+voltage.addEventListener("input", checkInputs);
+current.addEventListener("input", checkInputs);
+resistance.addEventListener("input", checkInputs);
+</script>
+
+
+<section id="calculateur_led">
+    <h2>Calculateur de Résistance pour LED (avec Zener en option)</h2>
+    <p>Choisissez un type de LED ou entrez vous-même les valeurs :</p>
+
+    <label>Type de LED :
+        <select id="ledType" onchange="updateLedValues()">
+            <option value="">-- Choisir un type --</option>
+            <option value="red">Rouge</option>
+            <option value="yellow">Jaune</option>
+            <option value="green">Verte</option>
+            <option value="blue">Bleue</option>
+            <option value="white">Blanche</option>
+            <option value="uv">UV</option>
+            <option value="custom">Personnalisé</option>
+        </select>
+    </label><br>
+
+    <label>Tension de seuil LED (Vf) :
+        <input type="number" id="ledVoltage" step="0.01">
+    </label><br>
+
+    <label>Courant de la LED (mA) :
+        <input type="number" id="ledCurrent" step="0.1">
+    </label><br>
+
+    <label>Tension d'alimentation (V) :
+        <input type="number" id="supplyVoltage" step="0.1">
+    </label><br><br>
+
+    <!-- --- OPTION ZENER --- -->
+    <label>
+        <input type="checkbox" id="useZener" onchange="toggleZener()"> Utiliser une diode Zener
+    </label><br>
+
+    <div id="zenerOptions" style="display:none;">
+        <label>Tension Zener (Vz) :
+            <input type="number" id="vz" step="0.1">
+        </label><br>
+
+        <label>Courant Zener minimal (Iz) en mA :
+            <input type="number" id="iz" step="0.1">
+        </label><br><br>
+    </div>
+
+    <button onclick="calculateLedResistor()">Calculer</button>
+
+    <p id="ledResult"></p>
+
+</section>
+
+<script>
+function updateLedValues() {
+    const type = document.getElementById("ledType").value;
+    const vfInput = document.getElementById("ledVoltage");
+    const currentInput = document.getElementById("ledCurrent");
+
+    const ledData = {
+        red:    { vf: 1.8, current: 10 },
+        yellow: { vf: 2.0, current: 10 },
+        green:  { vf: 2.1, current: 10 },
+        blue:   { vf: 3.0, current: 15 },
+        white:  { vf: 3.2, current: 15 },
+        uv:     { vf: 3.3, current: 10 }
+    };
+
+    if (type === "custom" || type === "") {
+        vfInput.value = "";
+        currentInput.value = "";
+        return;
+    }
+
+    vfInput.value = ledData[type].vf;
+    currentInput.value = ledData[type].current;
+}
+
+function toggleZener() {
+    const zone = document.getElementById("zenerOptions");
+    zone.style.display = document.getElementById("useZener").checked ? "block" : "none";
+}
+
+function calculateLedResistor() {
+    const Vs = parseFloat(document.getElementById("supplyVoltage").value);
+    const Vf = parseFloat(document.getElementById("ledVoltage").value);
+    const Iled = parseFloat(document.getElementById("ledCurrent").value) / 1000;
+    const useZener = document.getElementById("useZener").checked;
+
+    const result = document.getElementById("ledResult");
+
+    if (isNaN(Vs) || isNaN(Vf) || isNaN(Iled) || Iled <= 0) {
+        result.textContent = "⚠️ Entrer des valeurs valides.";
+        return;
+    }
+
+    let Vdrop = Vs - Vf; // chute totale par défaut
+
+    // --- SI ZENER ACTIVÉE ---
+    if (useZener) {
+        const Vz = parseFloat(document.getElementById("vz").value);
+        const Iz = parseFloat(document.getElementById("iz").value) / 1000;
+
+        if (isNaN(Vz) || isNaN(Iz) || Iz <= 0) {
+            result.textContent = "⚠️ Entrer une Zener et un courant Iz valides.";
+            return;
+        }
+
+        if (Vz >= Vs) {
+            result.textContent = "⚠️ Vz doit être inférieure à la tension d’alimentation.";
+            return;
+        }
+
+        // si Zener utilisée : tension stabilisée à Vz
+        Vdrop = Vs - Vz;
+
+        // le courant total = Iz + courant LED
+        const Itotal = Iz + Iled;
+        const Rz = Vdrop / Itotal; // résistance série
+
+        const Pz = Vz * Iz; // puissance dans la Zener
+        const Pr = Vdrop * Itotal; // puissance dans la résistance
+
+        result.innerHTML = `
+            <strong>Avec diode Zener :</strong><br><br>
+            Résistance série : <strong>${Rz.toFixed(1)} Ω</strong><br>
+            Puissance dissipée dans la Zener : <strong>${Pz.toFixed(2)} W</strong><br>
+            Puissance dissipée dans la résistance : <strong>${Pr.toFixed(2)} W</strong><br>
+        `;
+        return;
+    }
+
+    // ------ MODE NORMAL SANS ZENER ------
+    if (Vf >= Vs) {
+        result.textContent = "⚠️ Vf doit être inférieure à Vs.";
+        return;
+    }
+
+    const R = Vdrop / Iled;
+    const Rrounded = Math.round(R);
+
+    result.innerHTML = `
+        <strong>Sans diode Zener :</strong><br><br>
+        Résistance : <strong>${Rrounded} Ω</strong><br>
+        Valeur exacte : ${R.toFixed(2)} Ω
+    `;
+}
+</script>
+
+
+
 
 <section id="led-simulator">
     <h2>Simulateur de LED</h2>
@@ -110,7 +285,7 @@
             </svg>
 
             <!-- Inputs -->
-            <div style="text-align:center; margin-top:15px; color:#fff;">
+            <div style="text-align:left; margin-top:15px; color:#fff;">
                 <label>Tension (V): <input type="number" id="inputVoltage" value="5" step="0.1"></label>
                 <label>Résistance (Ω): <input type="number" id="inputResistance" value="100" step="1"></label>
                 <p id="currentDisplay">Courant: 0 mA</p>
@@ -234,15 +409,102 @@ updateLED();
 
 
 
-<section id="voltage-divider">
-    <h2>Simulation de diviseur de tension</h2>
+<section id="voltage-divider" > 
+    <h2 style="text-align: left;">Simulateur d'un pont diviseur de tension</h2>
     <p>Entrez la tension d’entrée et les valeurs des résistances :</p>
-    <label>Tension d’entrée (V) : <input type="number" id="vdInput" step="0.1"></label><br>
-    <label>R1 (Ω) : <input type="number" id="vdR1" step="1"></label><br>
-    <label>R2 (Ω) : <input type="number" id="vdR2" step="1"></label><br>
-    <button onclick="simulateVoltageDivider()">Calculer</button>
-    <p id="vdResult"></p>
+
+    <div class="simulator" style="display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%;">
+
+        <div class="controls" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; width: 100%;">
+            <label style="display: flex; flex-direction: column; align-items: center; flex: 1 1 100px;">
+                Tension d'entrée (Ve)
+                <input type="number" id="Vin" value="10" step="0.1" style="width: 80%; text-align: center; padding: 5px; margin-top: 5px; border-radius: 4px; border: 1px solid #ccc;">
+            </label>
+            <label style="display: flex; flex-direction: column; align-items: center; flex: 1 1 100px;">
+                R1 (Ω)
+                <input type="number" id="R1" value="1000" step="10" style="width: 80%; text-align: center; padding: 5px; margin-top: 5px; border-radius: 4px; border: 1px solid #ccc;">
+            </label>
+            <label style="display: flex; flex-direction: column; align-items: center; flex: 1 1 100px;">
+                R2 (Ω)
+                <input type="number" id="R2" value="1000" step="10" style="width: 80%; text-align: center; padding: 5px; margin-top: 5px; border-radius: 4px; border: 1px solid #ccc;">
+            </label>
+        </div>
+
+        <svg viewBox="0 0 600 250" style="width: 95%; height: auto; background-color: #555555; border: 1px solid #ccc; border-radius: 8px; padding: 10px; box-sizing: border-box;">
+            <defs>
+                <pattern id="resistorPattern" width="10" height="10" patternUnits="userSpaceOnUse">
+                    <rect width="5" height="10" fill="#f5f5f5"/>
+                    <rect x="5" width="5" height="10" fill="#ddd"/>
+                </pattern>
+            </defs>
+
+            <!-- Entrée Vin -->
+            <line x1="50" y1="20" x2="150" y2="20" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+            <text id="VinLabel" x="25" y="12" fill="#8B0000" font-weight="bold" font-size="14px">Ve = 10V</text>
+
+            <!-- R1 -->
+            <line x1="150" y1="20" x2="150" y2="80" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+            <rect id="resistorR1" class="resistor" x="140" y="50" width="20" height="40" fill="url(#resistorPattern)"/>
+            <line x1="150" y1="92" x2="150" y2="150" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+            <text id="labelR1" x="170" y="75" fill="#000">R1 = 1000Ω</text>
+
+            <!-- R2 -->
+            <line x1="150" y1="150" x2="150" y2="220" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+            <rect id="resistorR2" class="resistor" x="140" y="160" width="20" height="40" fill="url(#resistorPattern)"/>
+            <line x1="150" y1="220" x2="50" y2="220" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+            <text id="labelR2" x="170" y="185" fill="#000">R2 = 1000Ω</text>
+
+            <line x1="50" y1="212" x2="50" y2="30" stroke="#8B0000" stroke-width="4" stroke-linecap="round"/>
+            <polygon points="45,35 55,35 50,25" fill="#8B0000"/>
+
+            <!-- Vout -->
+            <line x1="150" y1="125" x2="250" y2="125" stroke="#000" stroke-width="4"/>
+            <text id="VoutLabel" x="260" y="130" fill="#000" font-weight="bold" font-size="14px">Vout = 5 V</text>
+        </svg>
+        <text id="VoutLabel" x="260" y="155" fill="#000080" font-weight="bold" font-size="14px">
+  <tspan>Vout = 5 V</tspan>
+    </text>
+
+
+    </div>
 </section>
+
+<script>
+const VinInput = document.getElementById('Vin');
+const R1Input = document.getElementById('R1');
+const R2Input = document.getElementById('R2');
+const VinLabel = document.getElementById('VinLabel');
+const VoutLabel = document.getElementById('VoutLabel');
+const labelR1 = document.getElementById('labelR1');
+const labelR2 = document.getElementById('labelR2');
+
+function updateDivider() {
+    let Vin = parseFloat(VinInput.value);
+    let R1 = parseFloat(R1Input.value);
+    let R2 = parseFloat(R2Input.value);
+
+    if(R1 <=0 ) R1 = 1;
+    if(R2 <=0 ) R2 = 1;
+
+    const Vout = Vin * (R2 / (R1 + R2));
+    VoutLabel.textContent = `Vout = ${Vout.toFixed(2)} V`;;
+
+    labelR1.textContent = `R1 = ${R1} Ω`;
+    labelR2.textContent = `R2 = ${R2} Ω`;
+    VinLabel.textContent = `Ve = ${Vin} V`;
+
+    // Couleur dynamique subtile sur blanc
+    const blue = Math.min(255, Math.floor(200 * Vout / Vin));
+    VoutLabel.setAttribute("fill", `rgb(0,0,${blue})`);
+}
+
+VinInput.addEventListener('input', updateDivider);
+R1Input.addEventListener('input', updateDivider);
+R2Input.addEventListener('input', updateDivider);
+
+updateDivider();
+</script>
+
 
 <section id="resistance-game">
     <h2>Mini-jeu : Trouve la bonne valeur de résistance</h2>
